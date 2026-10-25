@@ -6,6 +6,7 @@
 
 pub mod appearance;
 pub mod bounce;
+pub mod c0_host;
 pub mod control;
 pub mod credits;
 pub mod dialogs;
@@ -127,6 +128,12 @@ pub struct UiState {
     pub window_size: [f32; 2],
     pub window_maximized: bool,
     pub ui_scale: f32,
+    /// Chrome an embedding host can hide (`c0.set`); all on is upstream's own look.
+    pub edit_toolbar: bool,
+    pub status_bar: bool,
+    pub dock_tabs: bool,
+    pub community_links: bool,
+    pub quit_menu: bool,
 }
 
 impl Default for UiState {
@@ -187,6 +194,11 @@ impl Default for UiState {
             window_size: [1600.0, 1000.0],
             window_maximized: false,
             ui_scale: 1.0,
+            edit_toolbar: true,
+            status_bar: true,
+            dock_tabs: true,
+            community_links: true,
+            quit_menu: true,
         }
     }
 }

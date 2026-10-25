@@ -3,6 +3,8 @@
 use egui::{Color32, FontFamily, FontId};
 use std::sync::atomic::{AtomicBool, Ordering};
 
+pub mod host;
+
 /// Whether the Light palette is active. Dark is the default (the incumbent is dark-only).
 static LIGHT_THEME: AtomicBool = AtomicBool::new(false);
 
@@ -384,7 +386,7 @@ impl Tokens {
     };
 
     pub fn current() -> Tokens {
-        if is_light() { Self::LIGHT } else { Self::DARK }
+        host::resolve(is_light())
     }
 }
 

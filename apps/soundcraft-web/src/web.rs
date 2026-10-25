@@ -14,6 +14,8 @@ const LOADING_ID: &str = "soundcraft_loading";
 
 pub fn start() {
     eframe::WebLogger::init(log::LevelFilter::Info).ok();
+    #[cfg(feature = "page-control")]
+    crate::page_control::install_deliver(download);
     io::set_deliver(download);
     wasm_bindgen_futures::spawn_local(async {
         let Some(document) = web_sys::window().and_then(|w| w.document()) else {
@@ -30,7 +32,10 @@ pub fn start() {
         {
             create.instance_descriptor.backends = eframe::wgpu::Backends::GL;
         }
-        let result = eframe::WebRunner::new()
+        let runner = eframe::WebRunner::new();
+        #[cfg(feature = "page-control")]
+        crate::page_control::runner(&runner);
+        let result = runner
             .start(
                 canvas,
                 options,
@@ -41,6 +46,8 @@ pub fn start() {
                     let engine = if query().contains("empty") { Engine::default() } else { soundcraft_engine::demo::demo_engine() };
                     let player = soundcraft_playback::Player::new(Arc::new(engine.session().clone()));
                     let app = SoundApp::new(engine, Some(player), Services::default());
+                    #[cfg(feature = "page-control")]
+                    let app = crate::page_control::attach(app, &cc.egui_ctx);
                     Ok(Box::new(WebShell { app, inbox: Rc::default(), samples: Rc::default() }))
                 }),
             )

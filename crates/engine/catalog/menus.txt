@@ -502,7 +502,7 @@ Window > UI Customization
 Window > Metadata Inspector
 Window > Undo History
 Window > Transcript
-Window > Pro Tools Search
+Window > Search
 Window > Renderer
 Window > Trim and Downmix
 Window > Collaboration > Pro Tools Projects

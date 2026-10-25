@@ -443,6 +443,7 @@ fn handle(app: &mut SoundApp, ctx: &egui::Context, req: &ControlRequest) -> Opti
     let pos = egui::pos2(f("x"), f("y"));
     let steps = p.get("steps").and_then(Value::as_u64).unwrap_or(8).clamp(1, 200);
     Some(match req.method.as_str() {
+        m if m.starts_with("c0.") => crate::c0_host::handle(app, ctx, m, p),
         "engine.execute" | "command" => {
             let id = p.get("command").or_else(|| p.get("id")).and_then(Value::as_str).unwrap_or("");
             let params = p.get("params").cloned().unwrap_or(json!({}));

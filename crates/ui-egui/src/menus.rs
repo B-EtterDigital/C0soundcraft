@@ -57,7 +57,7 @@ pub const UI_COMMANDS: &[(&str, &str, &str, Option<&str>)] = &[
     ("window.midi_back", "MIDI Editors to Back", "Window > MIDI Editors > Send to Back", None),
     ("window.clip_effects", "Clip Effects", "Window > Clip Effects", None),
     ("window.clip_effects_dock", "Clip Effects", "View > Other Displays > Lower Dock > Clip Effects", Some("Alt+6")),
-    ("window.search", "Search", "Window > Pro Tools Search", Some("Cmd+Ctrl+S")),
+    ("window.search", "Search", "Window > Search", Some("Cmd+Ctrl+S")),
     ("window.score", "Score Editor", "Window > Score Editor", Some("Cmd+Ctrl+=")),
     ("window.beat_detective", "Beat Detective", "", None),
     ("window.tempo_ops", "Tempo Operations", "", None),
@@ -238,8 +238,8 @@ pub fn menu_bar(app: &mut SoundApp, ui: &mut egui::Ui) {
                     if ui.button("Session Audio Health").clicked() {
                         let _ = app.run("window.audio_health", json!({"value": true}));
                     }
-                    ui.separator();
-                    if ui.button("Quit").clicked() {
+                    let _ = app.ui.quit_menu.then(|| ui.separator());
+                    if app.ui.quit_menu && ui.button("Quit").clicked() {
                         let _ = crate::dialogs::run_or_ask(app, "app.quit", json!({}));
                     }
                 });

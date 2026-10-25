@@ -21,6 +21,9 @@
 #[cfg(target_arch = "wasm32")]
 mod web;
 
+#[cfg(feature = "page-control")]
+mod page_control;
+
 #[cfg(target_arch = "wasm32")]
 fn main() {
     web::start();

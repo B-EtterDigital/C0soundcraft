@@ -106,9 +106,9 @@ pub fn track_height(t: &Track) -> f32 {
 pub fn show(app: &mut SoundApp, ui: &mut Ui) {
     let t = Tokens::current();
     drive_drag(app, ui.ctx());
-    egui::Panel::top("edit_toolbar").exact_size(toolbar::HEIGHT).frame(egui::Frame::NONE.fill(t.toolbar_bg)).show(ui, |ui| toolbar::show(app, ui));
-    egui::Panel::bottom("edit_status").exact_size(22.0).frame(egui::Frame::NONE.fill(t.toolbar_bg)).show(ui, |ui| status_bar(app, ui));
-    egui::Panel::bottom("lower_dock_tabs").exact_size(22.0).frame(egui::Frame::NONE.fill(t.panel_bg2)).show(ui, |ui| dock_tabs(app, ui));
+    let _ = app.ui.edit_toolbar.then(|| egui::Panel::top("edit_toolbar").exact_size(toolbar::HEIGHT).frame(egui::Frame::NONE.fill(t.toolbar_bg)).show(ui, |ui| toolbar::show(app, ui)));
+    let _ = app.ui.status_bar.then(|| egui::Panel::bottom("edit_status").exact_size(22.0).frame(egui::Frame::NONE.fill(t.toolbar_bg)).show(ui, |ui| status_bar(app, ui)));
+    let _ = app.ui.dock_tabs.then(|| egui::Panel::bottom("lower_dock_tabs").exact_size(22.0).frame(egui::Frame::NONE.fill(t.panel_bg2)).show(ui, |ui| dock_tabs(app, ui)));
     if app.ui.show_universe {
         egui::Panel::top("universe").exact_size(64.0).frame(egui::Frame::NONE.fill(Tokens::current().universe_bg)).show(ui, |ui| universe(app, ui));
     }
