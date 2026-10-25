@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>C0sound</title>
+  <link data-trunk rel="rust" href="../../apps/soundcraft-web/Cargo.toml" data-bin="soundcraft-web" data-cargo-features="page-control" data-wasm-opt="z" data-weak-refs />
+  <style>
+    /* Transparent until the app paints: the host's own themed loading state shows through. */
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+    #soundcraft_canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    #soundcraft_loading { display: none; }
+  </style>
+  <script>
+    // C0VIBE's host calls window.__c0hostRequest (src/shared/sow/guestView.ts in C0X); SoundCraft's
+    // page-control feature defines window.__soundcraftControl once the app runs. Until then this is
+    // undefined, which the host reads as "not ready yet".
+    Object.defineProperty(window, '__c0hostRequest', { get: () => window.__soundcraftControl });
+  </script>
+</head>
+<body>
+  <canvas id="soundcraft_canvas"></canvas>
+  <script>
+    // Upstream's script (apps/soundcraft-web/index.html), unchanged: cpal (wasm) builds the output
+    // stream at startup, before any user gesture, so the WebAudio AudioContext stays 'suspended'.
+    // Capture the AudioContext cpal creates and resume it on the first user gesture.
+    (function () {
+      var Orig = window.AudioContext || window.webkitAudioContext;
+      if (!Orig) return;
+      var ctxs = [];
+      function Wrapped(opts) { var c = new Orig(opts); ctxs.push(c); return c; }
+      Wrapped.prototype = Orig.prototype;
+      window.AudioContext = Wrapped;
+      if (window.webkitAudioContext) window.webkitAudioContext = Wrapped;
+      function resumeAll() {
+        ctxs.forEach(function (c) { if (c.state === 'suspended') { c.resume().catch(function () {}); } });
+      }
+      ['pointerdown', 'mousedown', 'touchstart', 'keydown'].forEach(function (ev) {
+        window.addEventListener(ev, resumeAll, { capture: true });
+      });
+    })();
+  </script>
+  <div id="soundcraft_loading"></div>
+</body>
+</html>

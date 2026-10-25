@@ -1,0 +1,6 @@
+# The C0VIBE guest page of SoundCraft (C0sound). Build on the fleet only: NO_COLOR=true trunk build --release (from this directory).
+[build]
+target = "index.html"
+dist = "../../dist/c0host"
+public_url = "./"
+filehash = true
